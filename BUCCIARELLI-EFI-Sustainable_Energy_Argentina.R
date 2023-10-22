@@ -1,3 +1,5 @@
+library(ggplot2)
+
 sustainable_energy_db <- read.csv("sustainable_energy_argentina.csv")
 summary_db <- summary(sustainable_energy_db)
 
@@ -31,6 +33,21 @@ datos_prediccion_salida_elec_renovable_ajustado <- data.frame(TIME=anio_predicci
 salida_electricidad_renovable = as.double(predict(regresion_salida_elec_renovable_ajustado, datos_prediccion_salida_elec_renovable_ajustado))
 salida_electricidad_renovable
 
+# Grafico con respecto a años anteriores
+
+anios = c(sustainable_energy_db$TIME,anio_prediccion)
+elec_renov = c(sustainable_energy_db$REN.ELECTRICITY.OUTPUT,salida_electricidad_renovable)
+
+df <- data.frame(anios= anios,elec_renov=elec_renov)
+
+ggplot(df,aes(x=anios,y=elec_renov)) +
+  geom_point(na.rm = FALSE, stat = "identity") +
+  geom_line(na.rm = FALSE, stat = "identity") + 
+  xlab("Año") + 
+  ylab("Salida de electricidad renovable") +
+  scale_x_continuous(limits = c(1990, anio_prediccion), breaks = seq(1990, anio_prediccion, by = 5)) 
+
+
 # ---------------------------- Modelo de Predicción para el Consumo de Energia Renovable por año en Argentina (Terajoule-TJ)----------------------------------
 separador("Modelo de Predicción para el Consumo de Energia Renovable por año en Argentina (Terajoule-TJ)")
 
@@ -52,6 +69,21 @@ summary(regresion_consumo_ER_ajustado)
 datos_prediccion_consumo_ER <- data.frame(TIME=anio_prediccion,REN.ELECTRICITY.OUTPUT=salida_electricidad_renovable)
 cons_energia_renovable = as.double(predict(regresion_consumo_ER_ajustado, datos_prediccion_consumo_ER))
 cons_energia_renovable
+
+# Grafico con respecto a años anteriores
+
+re_consum = c(sustainable_energy_db$RE.CONSUMPTION,cons_energia_renovable)
+
+df <- data.frame(anios= anios,re_consum=re_consum)
+
+ggplot(df,aes(x=anios,y=re_consum)) +
+  geom_point(na.rm = FALSE, stat = "identity") +
+  geom_line(na.rm = FALSE, stat = "identity") + 
+  xlab("Año") + 
+  ylab("Consumo de Energía Renovable")+
+  scale_x_continuous(limits = c(1990, anio_prediccion), breaks = seq(1990, anio_prediccion, by = 5)) 
+
+
 # ---------------------------- Modelo de Predicción para la Salida Total de Electricidad por año en Argentina (GWh) ------------------------------------------------
 separador("Modelo de Predicción para la Salida Total de Electricidad por año en Argentina (GWh)")
 
@@ -74,6 +106,19 @@ datos_prediccion_salida_elec_total <- data.frame(TIME=anio_prediccion,RE.CONSUMP
 salida_total_electricidad = as.double(predict(regresion_salida_elec_total_ajustado, datos_prediccion_salida_elec_total))
 salida_total_electricidad
 
+# Grafico con respecto a años anteriores
+
+total_elec = c(sustainable_energy_db$TOTAL.ELECTRICITY.OUTPUT,salida_total_electricidad)
+
+df <- data.frame(anios= anios,total_elec=total_elec)
+
+ggplot(df,aes(x=anios,y=total_elec)) +
+  geom_point(na.rm = FALSE, stat = "identity") +
+  geom_line(na.rm = FALSE, stat = "identity") + 
+  xlab("Año") + 
+  ylab("Salida Total de Electricidad")+
+  scale_x_continuous(limits = c(1990, anio_prediccion), breaks = seq(1990, anio_prediccion, by = 5)) 
+
 # ---------------------------- Modelo de Predicción para el Total Final de Consumo de Energia por año en Argentina (Terajoules - TJ) ------------------------------------------------------
 separador("Modelo de Predicción para el Total Final de Consumo de Energia por año en Argentina (Terajoules - TJ)")
 
@@ -95,6 +140,19 @@ summary(regresion_total_cons_energia_ajustado)
 datos_prediccion_total_cons_energia <- data.frame(TIME=anio_prediccion)
 total_final_consumo_energia = as.double(predict(regresion_total_cons_energia_ajustado, datos_prediccion_total_cons_energia))
 total_final_consumo_energia
+
+# Grafico con respecto a años anteriores
+
+total_fin_cons = c(sustainable_energy_db$TOTAL.FINAL.ENERGY.CONSUM,total_final_consumo_energia)
+
+df <- data.frame(anios= anios,total_fin_cons=total_fin_cons)
+
+ggplot(df,aes(x=anios,y=total_fin_cons)) +
+  geom_point(na.rm = FALSE, stat = "identity") +
+  geom_line(na.rm = FALSE, stat = "identity") + 
+  xlab("Año") + 
+  ylab("Total Final de Consumo de Energía")+
+  scale_x_continuous(limits = c(1990, anio_prediccion), breaks = seq(1990, anio_prediccion, by = 5)) 
 
 # ---------------------------- Modelo de Predicción para el Nivel de Intensidad de Energia Primaria por año en Argentina (GWh) ---------------------------------------------------------
 separador("Modelo de Predicción para el Nivel de Intensidad de Energia Primaria por año en Argentina (GWh)")
@@ -121,6 +179,18 @@ datos_prediccion_intensidad_energ_prim_ajustado <- data.frame(TIME=anio_predicci
 nivel_intensidad_ener_primaria = as.double(predict(regresion_intensidad_energ_prim_ajustado, datos_prediccion_intensidad_energ_prim_ajustado))
 nivel_intensidad_ener_primaria
 
+# Grafico con respecto a años anteriores
+
+intens_energ = c(sustainable_energy_db$PRIMARY.ENERGY.INTENSITY,nivel_intensidad_ener_primaria)
+
+df <- data.frame(anios= anios,intens_energ=intens_energ)
+
+ggplot(df,aes(x=anios,y=intens_energ)) +
+  geom_point(na.rm = FALSE, stat = "identity") +
+  geom_line(na.rm = FALSE, stat = "identity") + 
+  xlab("Año") + 
+  ylab("Nivel de Intensidad de Consumo de Energía")+
+  scale_x_continuous(limits = c(1990, anio_prediccion), breaks = seq(1990, anio_prediccion, by = 5)) 
 
 # Construyendo matriz de resultado
 
@@ -129,3 +199,4 @@ colnames(matriz_resultado) <- c("Niv. de Intens. de Energía Primaria (GWh)|","S
                                 "Cons. de Energía Renovable (TJ)|","Salida Tot. de Elect. (GWh)|","Tot. Final de Cons. de Energía (TJ)|")
 rownames(matriz_resultado) <- paste("Año",anio_prediccion)
 matriz_resultado
+
